@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "za-tshwane-water",
+  "displayName": "Tshwane – Water (Domestic)",
+  "area": "City of Tshwane",
+  "type": "water",
+  "unit": "kl",
+  "currency": "ZAR",
+  "fixedMonthlyCharge": 203.70,
+  "vatPercent": 15,
+  "ratesIncludeVat": false,
+  "notes": "Block rates in Rand per kl (converted from c/kl). Add fixedMonthlyCharge / vatPercent if your tariff has them.",
+  "bands": [
+    { "from": 1,   "to": 9,  "rate": 0.0 },
+    { "from": 10, "to": 18,  "rate": 36.01 },
+    { "from": 19, "to": 30,  "rate": 48.73 },
+    { "from": 31, "to": 42, "rate": 56.13 },
+    { "from": 43, "to": 60, "rate": 60.02 },
+    { "from": 61, "to": null, "rate": 64.26 }
+  ]
+}

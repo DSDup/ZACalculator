@@ -6,6 +6,8 @@
   "type": "power",
   "unit": "kWh",
   "currency": "ZAR",
+  "vatPercent": 15,
+  "ratesIncludeVat": false,
   "notes": "Block rates in Rand per kWh (converted from c/kWh). Add fixedMonthlyCharge / vatPercent if your tariff has them.",
   "bands": [
     { "from": 1,   "to": 100,  "rate": 3.2411 },
