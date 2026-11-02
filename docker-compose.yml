@@ -1,0 +1,18 @@
+services:
+  web:
+    build: .
+    image: za-calculator
+    container_name: za-calculator
+    ports:
+      - "${PORT:-8080}:80"
+    # Keep tariff files outside the image: edit public/data/ and run
+    # `docker compose restart` (the container rebuilds data/index.json on start).
+    # The mount must stay writable for that to work.
+    volumes:
+      - ./public/data:/usr/share/nginx/html/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

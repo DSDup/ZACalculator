@@ -28,20 +28,38 @@ public/                  <- the whole website (this is what gets deployed)
   data/                  <- tariff JSON files + index.json (the list of files)
   samples/sample-bands.json   file offered by the "Download sample JSON" button
   _headers               Cloudflare Pages cache headers
-scripts/                 manifest generators
+scripts/                 bash / Node / PowerShell helper scripts (see "Scripts" below)
 docker/                  nginx config + container start-up script
 Dockerfile
+docker-compose.yml
 ```
 
 ## Run locally
 
-The site must be served over HTTP (browsers block `fetch` from `file://`). Any static server works:
+The site must be served over HTTP (browsers block `fetch` from `file://`). Either use the helper script (regenerates the file list, then serves `public/` with Python):
+
+```bash
+scripts/serve.sh          # http://localhost:8080, or: scripts/serve.sh 9000
+```
+
+or any static server:
 
 ```bash
 python -m http.server 8080 -d public
 ```
 
-Then open <http://localhost:8080>.
+## Scripts
+
+Bash scripts (Linux, macOS, WSL, Git Bash). Run `chmod +x scripts/*.sh` once if they are not executable.
+
+| Script | What it does |
+| --- | --- |
+| `scripts/build-manifest.sh` | Rebuilds `public/data/index.json`. Validates each file if `jq` is installed |
+| `scripts/serve.sh [port]` | Rebuilds the file list and serves the site locally with Python |
+| `scripts/docker.sh <cmd>` | Docker Compose wrapper: `up` (default), `update`, `restart`, `logs`, `status`, `down` |
+| `scripts/deploy-cloudflare.sh [project]` | Rebuilds the file list and deploys `public/` to Cloudflare Pages with wrangler |
+
+Equivalents without bash: `scripts/build-manifest.js` (Node) and `scripts/build-manifest.ps1` (PowerShell).
 
 ## Tariff JSON format
 
@@ -87,6 +105,7 @@ Bands are **monthly blocks**: the first 100 kWh of the month cost the band 1 rat
 
 1. Add or edit a `.json` file in `public/data/`.
 2. Regenerate the file list, `public/data/index.json` (static hosts cannot list a folder, so the app reads this list):
+   - Bash: `scripts/build-manifest.sh` (validates every file if `jq` is installed)
    - Node: `node scripts/build-manifest.js` (also validates every file)
    - Windows without Node: `powershell -ExecutionPolicy Bypass -File scripts/build-manifest.ps1`
    - Or edit `index.json` by hand: `{ "files": ["za-tshwane-power.json", "..."] }`
@@ -108,17 +127,34 @@ Connect the Git repo in the Cloudflare dashboard (**Workers & Pages â†’ Create â
 
 Every push to the connected branch redeploys. To update data: add the JSON file, push, done.
 
-Without Git, use direct upload (run the manifest step first):
+Without Git, use direct upload. Run `npx wrangler login` once, then:
 
 ```bash
-npx wrangler pages deploy public --project-name za-calculator
+scripts/deploy-cloudflare.sh my-project-name
 ```
+
+This rebuilds the file list and runs `npx wrangler pages deploy public`.
 
 ### Option B: Any static host (GitHub Pages, Netlify, S3, nginx, Apache...)
 
 Upload the contents of `public/`. Make sure `public/data/index.json` is up to date first.
 
-### Option C: Docker
+### Option C: Docker Compose (recommended for a server)
+
+```bash
+scripts/docker.sh up          # same as: docker compose up -d --build
+```
+
+Open <http://localhost:8080> (set `PORT=9000` to change the port). `docker-compose.yml` mounts `public/data/` into the container, so to add or change tariffs, edit the files and run:
+
+```bash
+scripts/docker.sh restart     # picks up new/changed tariff files
+scripts/docker.sh update      # after changing code (rebuilds the image)
+```
+
+Other commands: `logs`, `status`, `down`. The container restarts automatically unless stopped and has a health check.
+
+### Option D: plain Docker
 
 ```bash
 docker build -t za-calculator .
