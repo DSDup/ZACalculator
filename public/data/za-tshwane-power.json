@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "id": "za-tshwane-power",
+  "displayName": "Tshwane – Power (Electricity)",
+  "area": "City of Tshwane",
+  "type": "power",
+  "unit": "kWh",
+  "currency": "ZAR",
+  "notes": "Block rates in Rand per kWh (converted from c/kWh). Add fixedMonthlyCharge / vatPercent if your tariff has them.",
+  "bands": [
+    { "from": 1,   "to": 100,  "rate": 3.2411 },
+    { "from": 101, "to": 400,  "rate": 3.7932 },
+    { "from": 401, "to": 650,  "rate": 4.1327 },
+    { "from": 651, "to": null, "rate": 4.4551 }
+  ]
+}

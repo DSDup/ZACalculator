@@ -1,0 +1,10 @@
+{
+  "name": "zacalculator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Tiered usage-band cost calculator for power and water, driven by JSON tariff files.",
+  "type": "module",
+  "scripts": {
+    "build": "node scripts/build-manifest.js"
+  }
+}

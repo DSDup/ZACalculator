@@ -1,0 +1,9 @@
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: no-referrer
+
+/data/*
+  Cache-Control: no-cache
+
+/js/*
+  Cache-Control: no-cache

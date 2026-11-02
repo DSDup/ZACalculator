@@ -1,0 +1,16 @@
+.git
+.gitignore
+.gitattributes
+.dockerignore
+Dockerfile
+node_modules
+npm-debug.log*
+.wrangler
+.env
+.env.*
+.vscode
+.idea
+.claude
+*.md
+LICENSE
+scripts
